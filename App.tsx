@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Dimensions } from 'react-native';
 import * as FaceDetector from 'expo-face-detector';
 import { Camera } from 'expo-camera';
-import { FaceDetectionResult } from 'expo-camera/build/Camera.types';
+import { Face, FaceDetectionResult } from 'expo-camera/build/Camera.types';
 
 const { width, height } = Dimensions.get('window')
 
 export default function App() {
   const [hasPermission, setHasPermission] = useState(null);
-  const [type, setType] = useState(Camera.Constants.Type.back);
+  // const [type, setType] = useState(Camera.Constants.Type.back);
+  const [faceData, setFaceData] = useState<Face | null>(null)
 
   useEffect(() => {
     (async () => {
@@ -29,6 +30,9 @@ export default function App() {
   const handleFacesDetected = (param: FaceDetectionResult) => {
     if (param.faces.length) {
       console.log('face', param.faces[0])
+      setFaceData(param.faces[0])
+    } else {
+      setFaceData(null)
     }
   }
 
@@ -44,6 +48,81 @@ export default function App() {
           tracking: true,
         }}
       >
+        <View style={{
+          position: 'absolute',
+          height: 10,
+          width: 10,
+          backgroundColor: 'red',
+          left: faceData?.leftEarPosition.x || 0,
+          top: faceData?.leftEarPosition.y || 0
+        }}>
+        </View>
+
+
+        <View style={{
+          position: 'absolute',
+          height: 10,
+          width: 10,
+          backgroundColor: 'purple',
+          left: faceData?.rightEarPosition.x || 0,
+          top: faceData?.rightEarPosition.y || 0
+        }}>
+
+
+        </View>
+
+        <View style={{
+          position: 'absolute',
+          height: 10,
+          width: 10,
+          backgroundColor: 'green',
+          left: faceData?.leftEyePosition.x || 0,
+          top: faceData?.leftEyePosition.y || 0
+        }}>
+        </View>
+
+        <View style={{
+          position: 'absolute',
+          height: 10,
+          width: 10,
+          backgroundColor: 'orange',
+          left: faceData?.rightEyePosition.x || 0,
+          top: faceData?.rightEyePosition.y || 0
+        }}>
+        </View>
+
+
+        <View style={{
+          position: 'absolute',
+          height: 10,
+          width: 10,
+          backgroundColor: 'blue',
+          left: faceData?.noseBasePosition.x || 0,
+          top: faceData?.noseBasePosition.y || 0
+        }}>
+        </View>
+
+
+        <View style={{
+          position: 'absolute',
+          height: 10,
+          width: 10,
+          backgroundColor: '#eee',
+          left: faceData?.leftMouthPosition.x || 0,
+          top: faceData?.leftMouthPosition.y || 0
+        }}>
+        </View>
+
+
+        <View style={{
+          position: 'absolute',
+          height: 10,
+          width: 10,
+          backgroundColor: '#eee',
+          left: faceData?.rightMouthPosition.x || 0,
+          top: faceData?.rightMouthPosition.y || 0
+        }}>
+        </View>
       </Camera>
     </View>
   );
@@ -60,16 +139,17 @@ const styles = StyleSheet.create({
     width: width,
     height: height
   },
-  buttonContainer: {
-    flex: 1,
-    backgroundColor: 'transparent',
-    flexDirection: 'row',
-    margin: 20,
+  label: {
+    width: width,
+    position: 'absolute',
+    height: height * 0.1,
+    backgroundColor: '#fff',
+    bottom: 0
   },
-  button: {
-    flex: 0.1,
-    alignSelf: 'flex-end',
-    alignItems: 'center',
+  labelText: {
+    color: '#000',
+    fontSize: 16,
+    textAlign: 'center'
   },
   text: {
     fontSize: 18,
