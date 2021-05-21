@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Dimensions } from 'react-native';
 import * as FaceDetector from 'expo-face-detector';
 import { Camera } from 'expo-camera';
-import { Face, FaceDetectionResult } from 'expo-camera/build/Camera.types';
+import { FaceDetectionResult } from 'expo-camera/build/Camera.types';
 
 const { width, height } = Dimensions.get('window')
 
@@ -27,35 +27,23 @@ export default function App() {
   }
 
   const handleFacesDetected = (param: FaceDetectionResult) => {
-    if (param.faces.length)
-      console.log('face', param.faces[0].smilingProbability)
+    if (param.faces.length) {
+      console.log('face', param.faces[0])
+    }
   }
 
   return (
     <View style={styles.container}>
-      <Camera style={styles.camera} type={type}
+      <Camera style={styles.camera} type={Camera.Constants.Type.front}
         onFacesDetected={face => handleFacesDetected(face)}
         faceDetectorSettings={{
-          mode: FaceDetector.Constants.Mode.fast,
-          detectLandmarks: FaceDetector.Constants.Landmarks.none,
+          mode: FaceDetector.Constants.Mode.accurate,
+          detectLandmarks: FaceDetector.Constants.Landmarks.all,
           runClassifications: FaceDetector.Constants.Classifications.all,
           minDetectionInterval: 100,
           tracking: true,
         }}
       >
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-              setType(
-                type === Camera.Constants.Type.back
-                  ? Camera.Constants.Type.front
-                  : Camera.Constants.Type.back
-              );
-            }}>
-            <Text style={styles.text}> Flip </Text>
-          </TouchableOpacity>
-        </View>
       </Camera>
     </View>
   );
