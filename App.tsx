@@ -1,21 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import * as FaceDetector from 'expo-face-detector';
 import { Camera } from 'expo-camera';
-import { Face, FaceDetectionResult } from 'expo-camera/build/Camera.types';
+import { Face, FaceDetectionResult, PermissionResponse } from 'expo-camera/build/Camera.types';
+import Ladmarks from './components/Landmarks'
 
 const { width, height } = Dimensions.get('window')
 
 export default function App() {
-  const [hasPermission, setHasPermission] = useState(null);
+  const [hasPermission, setHasPermission] = useState<boolean>(false);
   // const [type, setType] = useState(Camera.Constants.Type.back);
   const [faceData, setFaceData] = useState<Face | null>(null)
 
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestPermissionsAsync();
-      console.log('status', status)
-      // @ts-ignore
+      const { status }: PermissionResponse = await Camera.requestPermissionsAsync();
       setHasPermission(status === 'granted');
     })();
   }, []);
@@ -48,81 +47,27 @@ export default function App() {
           tracking: true,
         }}
       >
-        <View style={{
-          position: 'absolute',
-          height: 10,
-          width: 10,
-          backgroundColor: 'red',
-          left: faceData?.leftEarPosition.x || 0,
-          top: faceData?.leftEarPosition.y || 0
-        }}>
-        </View>
 
+        {/* Orelha esquerda */}
+        <Ladmarks x={faceData?.leftEarPosition.x} y={faceData?.leftEarPosition.y} />
 
-        <View style={{
-          position: 'absolute',
-          height: 10,
-          width: 10,
-          backgroundColor: 'purple',
-          left: faceData?.rightEarPosition.x || 0,
-          top: faceData?.rightEarPosition.y || 0
-        }}>
+        {/* Orelha direita */}
+        <Ladmarks x={faceData?.rightEarPosition.x} y={faceData?.rightEarPosition.y} />
 
+        {/* Olho esquerdo */}
+        <Ladmarks x={faceData?.leftEyePosition.x} y={faceData?.leftEyePosition.y} />
 
-        </View>
+        {/* Olho direito */}
+        <Ladmarks x={faceData?.rightEyePosition.x} y={faceData?.rightEyePosition.y} />
 
-        <View style={{
-          position: 'absolute',
-          height: 10,
-          width: 10,
-          backgroundColor: 'green',
-          left: faceData?.leftEyePosition.x || 0,
-          top: faceData?.leftEyePosition.y || 0
-        }}>
-        </View>
+        {/* Nariz */}
+        <Ladmarks x={faceData?.noseBasePosition.x} y={faceData?.noseBasePosition.y} />
 
-        <View style={{
-          position: 'absolute',
-          height: 10,
-          width: 10,
-          backgroundColor: 'orange',
-          left: faceData?.rightEyePosition.x || 0,
-          top: faceData?.rightEyePosition.y || 0
-        }}>
-        </View>
+        {/* Lado esquerdo boca */}
+        <Ladmarks x={faceData?.leftMouthPosition.x} y={faceData?.leftMouthPosition.y} />
 
-
-        <View style={{
-          position: 'absolute',
-          height: 10,
-          width: 10,
-          backgroundColor: 'blue',
-          left: faceData?.noseBasePosition.x || 0,
-          top: faceData?.noseBasePosition.y || 0
-        }}>
-        </View>
-
-
-        <View style={{
-          position: 'absolute',
-          height: 10,
-          width: 10,
-          backgroundColor: '#eee',
-          left: faceData?.leftMouthPosition.x || 0,
-          top: faceData?.leftMouthPosition.y || 0
-        }}>
-        </View>
-
-
-        <View style={{
-          position: 'absolute',
-          height: 10,
-          width: 10,
-          backgroundColor: '#eee',
-          left: faceData?.rightMouthPosition.x || 0,
-          top: faceData?.rightMouthPosition.y || 0
-        }}>
-        </View>
+        {/* Lado direito boca */}
+        <Ladmarks x={faceData?.rightMouthPosition.x} y={faceData?.rightMouthPosition.y} />
       </Camera>
     </View>
   );
@@ -138,21 +83,5 @@ const styles = StyleSheet.create({
     flex: 1,
     width: width,
     height: height
-  },
-  label: {
-    width: width,
-    position: 'absolute',
-    height: height * 0.1,
-    backgroundColor: '#fff',
-    bottom: 0
-  },
-  labelText: {
-    color: '#000',
-    fontSize: 16,
-    textAlign: 'center'
-  },
-  text: {
-    fontSize: 18,
-    color: 'white',
-  },
+  }
 });
