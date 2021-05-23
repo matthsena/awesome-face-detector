@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
 
-interface LandMarksParams {
+export interface LandMarksParams {
   x?: number
   y?: number
   color?: string
