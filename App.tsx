@@ -4,6 +4,7 @@ import * as FaceDetector from 'expo-face-detector';
 import { Camera } from 'expo-camera';
 import { Face, FaceDetectionResult, PermissionResponse } from 'expo-camera/build/Camera.types';
 import Ladmarks from './components/Landmarks'
+import SmilingText from './components/SmilingText'
 
 const { width, height } = Dimensions.get('window')
 
@@ -28,7 +29,6 @@ export default function App() {
 
   const handleFacesDetected = (param: FaceDetectionResult) => {
     if (param.faces.length) {
-      console.log('face', param.faces[0])
       setFaceData(param.faces[0])
     } else {
       setFaceData(null)
@@ -68,6 +68,8 @@ export default function App() {
 
         {/* Lado direito boca */}
         <Ladmarks x={faceData?.rightMouthPosition.x} y={faceData?.rightMouthPosition.y} />
+
+        <SmilingText value={faceData?.smilingProbability} />
       </Camera>
     </View>
   );
