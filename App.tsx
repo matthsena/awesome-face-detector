@@ -5,6 +5,7 @@ import { Camera } from 'expo-camera';
 import { Face, FaceDetectionResult, PermissionResponse } from 'expo-camera/build/Camera.types';
 import Ladmarks from './components/Landmarks'
 import SmilingText from './components/SmilingText'
+import ClownNose from './components/ClownNose'
 
 const { width, height } = Dimensions.get('window')
 
@@ -61,7 +62,10 @@ export default function App() {
         <Ladmarks x={faceData?.rightEyePosition.x} y={faceData?.rightEyePosition.y} />
 
         {/* Nariz */}
-        <Ladmarks x={faceData?.noseBasePosition.x} y={faceData?.noseBasePosition.y} />
+        {(faceData?.smilingProbability || 0) > 0.8 ?
+          <ClownNose x={faceData?.noseBasePosition.x} y={faceData?.noseBasePosition.y} /> :
+          <Ladmarks x={faceData?.noseBasePosition.x} y={faceData?.noseBasePosition.y} />
+        }
 
         {/* Lado esquerdo boca */}
         <Ladmarks x={faceData?.leftMouthPosition.x} y={faceData?.leftMouthPosition.y} />
