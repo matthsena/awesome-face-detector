@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
   textContent: {
     width: width,
     position: 'absolute',
-    bottom: 64,
+    bottom: 96,
     left: 0
   },
   textDesc: {

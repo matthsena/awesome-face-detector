@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, TouchableOpacity, Image } from 'react-native';
 import * as FaceDetector from 'expo-face-detector';
 import { Camera } from 'expo-camera';
 import { Face, FaceDetectionResult, PermissionResponse } from 'expo-camera/build/Camera.types';
@@ -11,7 +11,7 @@ const { width, height } = Dimensions.get('window')
 
 export default function App() {
   const [hasPermission, setHasPermission] = useState<boolean>(false);
-  // const [type, setType] = useState(Camera.Constants.Type.back);
+  const [type, setType] = useState(Camera.Constants.Type.front);
   const [faceData, setFaceData] = useState<Face | null>(null)
 
   useEffect(() => {
@@ -36,9 +36,18 @@ export default function App() {
     }
   }
 
+  const handleCamRotate = () => {
+    setType(
+      type === Camera.Constants.Type.back
+        ? Camera.Constants.Type.front
+        : Camera.Constants.Type.back
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <Camera style={styles.camera} type={Camera.Constants.Type.front}
+      <Camera style={styles.camera}
+        type={type}
         onFacesDetected={face => handleFacesDetected(face)}
         faceDetectorSettings={{
           mode: FaceDetector.Constants.Mode.accurate,
@@ -74,6 +83,10 @@ export default function App() {
         <Ladmarks x={faceData?.rightMouthPosition.x} y={faceData?.rightMouthPosition.y} />
 
         <SmilingText value={faceData?.smilingProbability} />
+
+        <TouchableOpacity style={styles.camRotateContainer} onPress={() => handleCamRotate()}>
+          <Image style={styles.camRotate} source={require('./assets/reverse-camera.jpeg')} width={width * 0.15} height={width * 0.15} />
+        </TouchableOpacity>
       </Camera>
     </View>
   );
@@ -89,5 +102,17 @@ const styles = StyleSheet.create({
     flex: 1,
     width: width,
     height: height
+  },
+  camRotateContainer: {
+    alignSelf: 'flex-end',
+    marginTop: height - (width * 0.15) - 32,
+    marginHorizontal: 32,
+    opacity: 0.5
+  },
+  camRotate: {
+    width: width * 0.15,
+    height: width * 0.15,
+    backgroundColor: '#fff',
+    borderRadius: 8
   }
 });
